@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
+    <meta name="theme-color" content="#EEF2F4">
+    <title>Peak-Flow-Tagebuch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+
+<body>
+
+    <div class="app">
+        <header class="head">
+            <div class="wordmark">Peak Flow</div>
+            <div class="today" id="todayLabel"></div>
+        </header>
+
+        <div id="banners"></div>
+
+        <!-- ============ MESSEN ============ -->
+        <section class="view on" id="view-measure">
+            <div class="card">
+                <div class="readout">
+                    <input class="val" id="valInput" type="text" inputmode="numeric" autocomplete="off"
+                        aria-label="Gemessener Wert in Liter pro Minute" value="400">
+                    <div class="unit">L / min</div>
+                    <div class="zoneline" id="zoneLine"></div>
+                </div>
+
+                <div class="scale" id="scale" role="slider" tabindex="0" aria-label="Wert auf der Skala einstellen"
+                    aria-valuemin="60" aria-valuemax="900" aria-valuenow="400"></div>
+
+                <div class="steppers">
+                    <button class="step" id="minus" aria-label="5 weniger">−5</button>
+                    <button class="step" id="plus" aria-label="5 mehr">+5</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <p class="eyebrow">Datum</p>
+                <div class="seg" id="dateSeg">
+                    <button data-d="today" aria-pressed="true">Heute</button>
+                    <button data-d="other" aria-pressed="false">Anderes Datum</button>
+                </div>
+                <div id="datePickerWrap" hidden>
+                    <div class="inline" style="margin-top:12px">
+                        <label class="f"><span>Datum</span>
+                            <input type="date" id="entryDate">
+                        </label>
+                        <label class="f"><span>Uhrzeit</span>
+                            <input type="time" id="entryTime">
+                        </label>
+                    </div>
+                </div>
+
+                <div id="periodWrap">
+                    <p class="eyebrow" style="margin-top:18px">Zeitpunkt</p>
+                    <div class="seg" id="periodSeg">
+                        <button data-p="morgens" aria-pressed="false">Morgens</button>
+                        <button data-p="abends" aria-pressed="false">Abends</button>
+                        <button data-p="sonstige" aria-pressed="false">Sonstige</button>
+                    </div>
+                    <div id="sonstigeTimeWrap" hidden>
+                        <div style="margin-top:12px;max-width:50%">
+                            <label class="f"><span>Uhrzeit</span>
+                                <input type="time" id="sonstigeTime">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="eyebrow" style="margin-top:18px">Wie war es dabei? <span
+                        style="text-transform:none;letter-spacing:0">(optional)</span></p>
+                <div class="chiprow" id="tagRow"></div>
+
+                <div style="margin-top:12px">
+                    <button class="linkbtn" id="noteToggle">Notiz hinzufügen</button>
+                    <textarea id="noteField" hidden
+                        placeholder="z. B. Staub beim Aufräumen, schlecht geschlafen"></textarea>
+                </div>
+            </div>
+
+            <div id="dateHint"></div>
+            <button class="primary" id="saveBtn">Messung speichern</button>
+            <div id="afterSave"></div>
+
+            <div id="todayCard"></div>
+        </section>
+
+        <!-- ============ VERLAUF ============ -->
+        <section class="view" id="view-trend">
+            <div class="card">
+                <div class="seg" id="rangeSeg">
+                    <button data-r="14" aria-pressed="true">14 Tage</button>
+                    <button data-r="30" aria-pressed="false">30 Tage</button>
+                    <button data-r="90" aria-pressed="false">90 Tage</button>
+                </div>
+                <div class="chartwrap" id="chartWrap" style="margin-top:14px"></div>
+                <div class="legend" id="chartLegend"></div>
+                <div class="daydetail" id="dayDetail"></div>
+            </div>
+
+            <div id="statsWrap"></div>
+
+            <div class="card" id="varCard">
+                <p class="eyebrow">Tagesschwankung</p>
+                <div class="chartwrap" id="varWrap"></div>
+                <p class="note" style="margin:10px 0 0">Abstand zwischen höchstem und niedrigstem Wert eines Tages, in
+                    Prozent des Höchstwerts. Ab etwa 20 % gilt der Tag als auffällig – ein Punkt, den viele Ärztinnen
+                    und Ärzte im Verlauf sehen wollen.</p>
+            </div>
+
+            <div id="criticalWrap"></div>
+
+            <p class="eyebrow" style="margin-top:22px">Einträge</p>
+            <div id="journalWrap"></div>
+        </section>
+
+        <!-- ============ EINSTELLUNGEN ============ -->
+        <section class="view" id="view-settings">
+            <div class="card">
+                <p class="eyebrow">Persönlicher Bestwert</p>
+                <div class="inline">
+                    <label class="f"><span>L / min</span>
+                        <input type="number" id="bestInput" inputmode="numeric" min="50" max="1000" step="5"
+                            placeholder="—">
+                    </label>
+                    <button class="ghost" id="bestFromData" style="flex:1;width:auto">Aus Werten übernehmen</button>
+                </div>
+                <p class="note" style="margin-top:12px">Alle Zonen rechnen sich aus diesem Wert. Üblich ist der beste
+                    Wert aus einer beschwerdefreien Phase mit zwei Messungen täglich über zwei bis drei Wochen.</p>
+            </div>
+
+            <div class="card">
+                <p class="eyebrow">Zonengrenzen</p>
+                <div class="inline">
+                    <label class="f"><span>Grün ab %</span><input type="number" id="greenPct" min="55" max="95"
+                            step="1"></label>
+                    <label class="f"><span>Rot unter %</span><input type="number" id="redPct" min="20" max="70"
+                            step="1"></label>
+                </div>
+                <div id="zonePreview" class="note" style="margin-top:12px"></div>
+            </div>
+
+            <div class="card">
+                <p class="eyebrow">Was tue ich in welcher Zone?</p>
+                <p class="note" style="margin:0 0 12px">Eigener Text – er erscheint direkt nach dem Speichern, wenn die
+                    Messung in diese Zone fällt. Am besten mit der behandelnden Praxis abgestimmt.</p>
+                <label class="f"><span>Grüne Zone</span><textarea id="planGreen"
+                        placeholder="z. B. Basismedikation wie besprochen weiterführen"></textarea></label>
+                <label class="f"><span>Gelbe Zone</span><textarea id="planAmber"
+                        placeholder="z. B. Bedarfsmedikation, Werte engmaschiger messen, Praxis anrufen wenn es nicht besser wird"></textarea></label>
+                <label class="f" style="margin-bottom:0"><span>Rote Zone</span><textarea id="planRed"
+                        placeholder="z. B. Notfallmedikation, sofort ärztliche Hilfe"></textarea></label>
+            </div>
+
+            <div class="card">
+                <p class="eyebrow">Erinnerungen</p>
+                <div class="switch">
+                    <span style="font-size:15px">Offene Messung anzeigen</span>
+                    <input type="checkbox" id="remOn" role="switch">
+                </div>
+                <div class="inline">
+                    <label class="f"><span>Morgens ab</span><input type="time" id="remMorning"></label>
+                    <label class="f"><span>Abends ab</span><input type="time" id="remEvening"></label>
+                </div>
+                <p class="note" style="margin-top:12px">Die App zeigt ab dieser Uhrzeit oben einen Hinweis, solange die
+                    Messung fehlt. Echte Push-Nachrichten kann eine Seite im Browser-Tab nicht zuverlässig senden –
+                    dafür müsste sie als App auf dem Startbildschirm installiert sein.</p>
+            </div>
+
+            <div class="card">
+                <p class="eyebrow">Bericht &amp; Daten</p>
+                <button class="ghost" id="printBtn" style="margin-bottom:10px">Bericht drucken oder als PDF
+                    sichern</button>
+                <button class="ghost" id="csvBtn" style="margin-bottom:10px">CSV herunterladen</button>
+                <button class="ghost" id="copyBtn" style="margin-bottom:10px">CSV in Zwischenablage kopieren</button>
+                <textarea id="csvFallback" hidden readonly aria-label="CSV zum Kopieren"
+                    style="margin-bottom:10px;font-family:var(--mono);font-size:12px"></textarea>
+                <button class="ghost danger" id="wipeBtn">Alle Daten löschen</button>
+                <p class="note" style="margin-top:12px">Die Werte liegen in diesem Browser, ohne Konto und ohne
+                    Weitergabe. Vor einem Gerätewechsel lohnt sich der CSV-Export.</p>
+            </div>
+
+            <p class="foot">Ein Tagebuch, keine Diagnose. Bei anhaltend niedrigen Werten, Atemnot oder rascher
+                Verschlechterung gehört die Einschätzung in ärztliche Hände – im Notfall 112.</p>
+        </section>
+    </div>
+
+    <nav class="nav">
+        <div class="inner">
+            <button data-view="measure" aria-current="page">
+                <svg class="ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8AA0AF"
+                    stroke-width="1.6" stroke-linecap="round">
+                    <path d="M3 15h18" />
+                    <path d="M7 15v-3M12 15V7M17 15v-5" />
+                </svg>
+                Messen
+            </button>
+            <button data-view="trend">
+                <svg class="ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8AA0AF"
+                    stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 17l5-6 4 3 5-8 4 4" />
+                </svg>
+                Verlauf
+            </button>
+            <button data-view="settings">
+                <svg class="ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8AA0AF"
+                    stroke-width="1.6" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="3.2" />
+                    <path
+                        d="M12 3v2M12 19v2M21 12h-2M5 12H3M18.4 5.6l-1.4 1.4M7 17l-1.4 1.4M18.4 18.4L17 17M7 7L5.6 5.6" />
+                </svg>
+                Einstellungen
+            </button>
+        </div>
+    </nav>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div id="report"></div>
+
+    <!-- JS: Reihenfolge wichtig (keine Module, da der Code globale Variablen teilt) -->
+    <script src="js/state.js"></script>
+    <script src="js/helpers.js"></script>
+    <script src="js/days.js"></script>
+    <script src="js/scale.js"></script>
+    <script src="js/measure.js"></script>
+    <script src="js/trend.js"></script>
+    <script src="js/banners.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

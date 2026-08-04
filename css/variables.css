@@ -1,0 +1,18 @@
+:root{
+  --paper:#EEF2F4;
+  --card:#FFFFFF;
+  --ink:#0F2233;
+  --ink2:#54697A;
+  --ink3:#8AA0AF;
+  --rule:#D3DEE4;
+  --accent:#0E5C7A;
+  --green:#16775A;
+  --amber:#A96C0E;
+  --red:#A32B25;
+  --green-t:#DCEAE3;
+  --amber-t:#F6E7CB;
+  --red-t:#F4DBD7;
+  --r:14px;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
