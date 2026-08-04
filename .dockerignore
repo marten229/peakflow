@@ -1,0 +1,4 @@
+.gemini/
+.git/
+docker-compose.yml
+Dockerfile

@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  web:
+    build: https://github.com/marten229/peakflow.git
+    container_name: peakflow-web
+    ports:
+      - "8181:80"
+    restart: unless-stopped
