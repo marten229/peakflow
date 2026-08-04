@@ -2,8 +2,15 @@ version: '3.8'
 
 services:
   web:
-    build: .
+    image: nginx:alpine
     container_name: peakflow-web
     ports:
       - "8181:80"
+    command: >
+      /bin/sh -c "
+      wget -qO- https://github.com/marten229/peakflow/archive/refs/heads/main.tar.gz | tar xz -C /tmp/ &&
+      cp -a /tmp/peakflow-main/. /usr/share/nginx/html/ &&
+      rm -rf /tmp/peakflow-main &&
+      nginx -g 'daemon off;'
+      "
     restart: unless-stopped
