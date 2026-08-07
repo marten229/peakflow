@@ -5,13 +5,14 @@ function buildCSV() {
     var rows = [["Datum", "Uhrzeit", "Wert_L_min", "Zeitpunkt", "Zone", "Prozent_vom_Bestwert", "Beobachtungen", "Notiz"].join(";")];
     state.entries.slice().sort(function (a, b) { return new Date(a.ts) - new Date(b.ts); }).forEach(function (e) {
         var d = new Date(e.ts);
+        var pct = pctOfBest(e.value);
         rows.push([
             String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + d.getFullYear(),
             timeOf(e.ts),
             e.value,
             e.period,
             zoneName(zoneOf(e.value)),
-            pctOfBest(e.value) == null ? "" : pctOfBest(e.value),
+            pct == null ? "" : pct,
             (e.tags || []).join(", "),
             (e.note || "").replace(/[\r\n;]/g, " ")
         ].join(";"));

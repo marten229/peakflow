@@ -90,7 +90,7 @@ function renderChart(days) {
         '<span><i style="background:#0F2233"></i>Trend über 7 Tage</span>' +
         '<span><i style="background:#A96C0E;clip-path:polygon(50% 0,100% 100%,0 100%)"></i>Auffälliger Tag</span>';
 
-    Array.prototype.forEach.call($("#chartWrap").querySelectorAll(".hit"), function (r) {
+    $("#chartWrap").querySelectorAll(".hit").forEach(function (r) {
         r.addEventListener("click", function () {
             ui.selectedDay = r.dataset.key;
             renderDayDetail(days);
@@ -189,10 +189,11 @@ function renderStats(days) {
         c.appendChild(val);
         return c;
     }
+    var avgMorn = mean(mornVals), avgEve = mean(eveVals);
     g.appendChild(cell("Mittel 7 Tage", avg7 == null ? "—" : avg7, avg7 != null && state.settings.best ? Math.round(avg7 / state.settings.best * 100) + " %" : "L/min", avg7 != null ? zoneColor(zoneOf(avg7)) : null));
     g.appendChild(cell("Erfasste Tage", withData.length, "von " + days.length));
-    g.appendChild(cell("Ø morgens", mean(mornVals) == null ? "—" : mean(mornVals), "L/min"));
-    g.appendChild(cell("Ø abends", mean(eveVals) == null ? "—" : mean(eveVals), "L/min"));
+    g.appendChild(cell("Ø morgens", avgMorn == null ? "—" : avgMorn, "L/min"));
+    g.appendChild(cell("Ø abends", avgEve == null ? "—" : avgEve, "L/min"));
     g.appendChild(cell("Ø Schwankung", avgVar == null ? "—" : avgVar + " %", "", avgVar != null && avgVar >= 20 ? "#A96C0E" : null));
     g.appendChild(cell("Auffällige Tage", crit, "", crit ? "#A96C0E" : null));
     card.appendChild(g);

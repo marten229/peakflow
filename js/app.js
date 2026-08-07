@@ -5,7 +5,7 @@ function show(name) {
     ["measure", "trend", "settings"].forEach(function (v) {
         $("#view-" + v).classList.toggle("on", v === name);
     });
-    Array.prototype.forEach.call(document.querySelectorAll(".nav button"), function (b) {
+    document.querySelectorAll(".nav button").forEach(function (b) {
         if (b.dataset.view === name) b.setAttribute("aria-current", "page");
         else b.removeAttribute("aria-current");
     });
@@ -18,8 +18,8 @@ function renderAll() {
     renderZoneLine();
     renderTodayCard();
     renderBanners();
-    renderTrend();
-    renderSettings();
+    if ($("#view-trend").classList.contains("on")) renderTrend();
+    if ($("#view-settings").classList.contains("on")) renderSettings();
 }
 
 function init() {
@@ -47,7 +47,7 @@ function init() {
     $("#minus").addEventListener("click", function () { setValue(ui.value - 5); });
     $("#plus").addEventListener("click", function () { setValue(ui.value + 5); });
 
-    Array.prototype.forEach.call($("#periodSeg").children, function (b) {
+    Array.from($("#periodSeg").children).forEach(function (b) {
         b.addEventListener("click", function () {
             ui.period = b.dataset.p;
             renderPeriodSeg();
@@ -55,10 +55,10 @@ function init() {
             if (ui.period !== "sonstige") $("#sonstigeTime").value = "";
         });
     });
-    Array.prototype.forEach.call($("#rangeSeg").children, function (b) {
+    Array.from($("#rangeSeg").children).forEach(function (b) {
         b.addEventListener("click", function () {
             ui.range = parseInt(b.dataset.r, 10);
-            Array.prototype.forEach.call($("#rangeSeg").children, function (x) {
+            Array.from($("#rangeSeg").children).forEach(function (x) {
                 x.setAttribute("aria-pressed", x === b ? "true" : "false");
             });
             ui.selectedDay = null;
@@ -73,9 +73,9 @@ function init() {
         if (!f.hidden) f.focus();
     });
 
-    Array.prototype.forEach.call($("#dateSeg").children, function (b) {
+    Array.from($("#dateSeg").children).forEach(function (b) {
         b.addEventListener("click", function () {
-            Array.prototype.forEach.call($("#dateSeg").children, function (x) {
+            Array.from($("#dateSeg").children).forEach(function (x) {
                 x.setAttribute("aria-pressed", x === b ? "true" : "false");
             });
             var isOther = b.dataset.d === "other";
@@ -100,7 +100,7 @@ function init() {
 
     $("#saveBtn").addEventListener("click", saveEntry);
 
-    Array.prototype.forEach.call(document.querySelectorAll(".nav button"), function (b) {
+    document.querySelectorAll(".nav button").forEach(function (b) {
         b.addEventListener("click", function () { show(b.dataset.view); window.scrollTo({ top: 0, behavior: "instant" }); });
     });
 }

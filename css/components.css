@@ -38,11 +38,6 @@
     margin-bottom: 14px
 }
 
-.card.flat {
-    background: transparent;
-    border: 0;
-    padding: 0
-}
 
 /* ---------- Ablesung ---------- */
 .readout {
@@ -234,10 +229,6 @@ button {
     background: #0A4A63
 }
 
-.primary[disabled] {
-    background: #B7C6CE;
-    color: #F2F6F8
-}
 
 .ghost {
     width: 100%;
@@ -663,11 +654,6 @@ textarea {
     }
 }
 
-hr.rule {
-    border: 0;
-    border-top: 1px solid var(--rule);
-    margin: 18px 0
-}
 
 .foot {
     font-size: 12px;

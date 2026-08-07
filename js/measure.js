@@ -18,7 +18,7 @@ function renderTags() {
 }
 
 function renderPeriodSeg() {
-    Array.prototype.forEach.call($("#periodSeg").children, function (b) {
+    Array.from($("#periodSeg").children).forEach(function (b) {
         b.setAttribute("aria-pressed", b.dataset.p === ui.period ? "true" : "false");
     });
 }
@@ -53,7 +53,7 @@ function resetDatePicker() {
     $("#datePickerWrap").hidden = true;
     $("#periodWrap").hidden = false;
     $("#sonstigeTimeWrap").hidden = true;
-    Array.prototype.forEach.call($("#dateSeg").children, function (b) {
+    Array.from($("#dateSeg").children).forEach(function (b) {
         b.setAttribute("aria-pressed", b.dataset.d === "today" ? "true" : "false");
     });
     renderDateHint();
@@ -90,6 +90,7 @@ function saveEntry() {
     persist();
 
     var z = zoneOf(v);
+    var today = buildDays(1);
     ui.tags = [];
     $("#noteField").value = "";
     $("#noteField").hidden = true;
@@ -97,8 +98,8 @@ function saveEntry() {
     resetDatePicker();
     renderTags();
     renderAfterSave(entry, z, customDate);
-    renderTodayCard();
-    renderBanners();
+    renderTodayCard(today);
+    renderBanners(today);
     renderTrend();
     var toastMsg = "Gespeichert · " + v + " L/min";
     if (customDate) toastMsg += " · " + shortDate(dayKey(entry.ts));
@@ -152,9 +153,9 @@ function renderAfterSave(entry, z, wasPastEntry) {
     box.appendChild(wrap);
 }
 
-function renderTodayCard() {
+function renderTodayCard(prebuilt) {
     var box = $("#todayCard");
-    var days = buildDays(1), d = days[0];
+    var days = prebuilt || buildDays(1), d = days[0];
     box.innerHTML = "";
     if (!d.entries.length) {
         var e = el("div", "empty", "Heute noch kein Wert. Der erste Eintrag dauert keine zehn Sekunden.");

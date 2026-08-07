@@ -1,11 +1,11 @@
 /* ============================================================
    Hinweisleiste oben
    ============================================================ */
-function renderBanners() {
+function renderBanners(prebuilt) {
     var box = $("#banners");
     box.innerHTML = "";
     var r = state.settings.reminders;
-    var today = buildDays(1)[0];
+    var today = prebuilt ? prebuilt[0] : buildDays(1)[0];
 
     if (!state.settings.best && state.entries.length >= 3) {
         var b1 = el("div", "banner");

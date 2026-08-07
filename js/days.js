@@ -1,18 +1,12 @@
 /* ============================================================
    Tagesauswertung
    ============================================================ */
-function dayList(n) {
-    var out = [], today = new Date();
+function buildDays(n) {
+    var keys = [], today = new Date();
     today.setHours(0, 0, 0, 0);
     for (var i = n - 1; i >= 0; i--) {
-        var d = new Date(today.getTime() - i * 86400000);
-        out.push(dayKey(d));
+        keys.push(dayKey(new Date(today.getTime() - i * 86400000)));
     }
-    return out;
-}
-
-function buildDays(n) {
-    var keys = dayList(n);
     var byDay = {};
     state.entries.forEach(function (e) {
         var k = dayKey(e.ts);

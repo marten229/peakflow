@@ -9,10 +9,6 @@ window.storage = {
   set: function (key, value) {
     try { localStorage.setItem(key, value); } catch (e) { return Promise.reject(e); }
     return Promise.resolve();
-  },
-  remove: function (key) {
-    localStorage.removeItem(key);
-    return Promise.resolve();
   }
 };
 
@@ -36,8 +32,7 @@ var ui = {
   period: "morgens",
   tags: [],
   range: 14,
-  selectedDay: null,
-  ready: false
+  selectedDay: null
 };
 
 function applyStored(res) {
@@ -62,7 +57,6 @@ function applyStored(res) {
 
 function load() {
   return new Promise(function (resolve) {
-    if (!window.storage) return resolve();
     try {
       var p = window.storage.get(KEY);
       if (!p || typeof p.then !== "function") return resolve();
